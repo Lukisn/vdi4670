@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 """mixture unit test module."""
+# TODO: implement instantiation tests
+# TODO: implement output tests (TDD style)
 
 import unittest
 

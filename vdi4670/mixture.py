@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 """mixture module."""
 
-import pint
-
-ureg = pint.UnitRegistry()
+from . import ureg, Q_
 
 
 reference_temperature = 273.15  # T_0 [K]
