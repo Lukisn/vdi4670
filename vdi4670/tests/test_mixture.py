@@ -1,22 +1,22 @@
 #!/usr/bin/env python
 """mixture unit test module."""
-# TODO: implement instantiation tests
-# TODO: implement output tests (TDD style)
 
-import unittest
-
-
-class TestMolarMass(unittest.TestCase):
-
-    def test_stuff(self):
-        pass
+import pytest
+from ..mixture import Mixture
 
 
-class TestMixture(unittest.TestCase):
+class TestMixture:
 
-    def test_other_stuff(self):
-        pass
+    def test_init_mole_fractions_fails_1(self):
+        with pytest.raises(ValueError):
+            Mixture()
 
+    def test_init_mole_fractions_fails_2(self):
+        with pytest.raises(ValueError):
+            Mixture(n2=1.1)
 
-if __name__ == '__main__':
-    unittest.main()
+    def test_init_mole_fractions_succeeds(self):
+        n2 = Mixture(n2=1)
+        assert isinstance(n2, Mixture)
+        assert n2._x_N2 == 1
+        assert n2._x_O2 == 0
