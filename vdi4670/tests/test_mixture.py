@@ -18,5 +18,11 @@ class TestMixture:
     def test_init_mole_fractions_succeeds(self):
         n2 = Mixture(n2=1)
         assert isinstance(n2, Mixture)
-        assert n2._x_N2 == 1
-        assert n2._x_O2 == 0
+        assert n2._x_n2 == 1
+        assert n2._x_o2 == 0
+
+
+class TestExamples:
+    """Test case for testing the mixture examples given in the VDI 4670 document."""
+
+    pass

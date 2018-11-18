@@ -13,14 +13,14 @@ class Mixture:
         x = n2 + o2 + ar + ne + h2o + co2 + co + so2
         if x != 1:
             raise ValueError("mole fractions should sum up to a total of 1!")
-        self._x_N2 = n2
-        self._x_O2 = o2
-        self._x_Ar = ar
-        self._x_Ne = ne
-        self._x_H2O = h2o
-        self._x_CO2 = co2
-        self._x_CO = co
-        self._x_SO2 = so2
+        self._x_n2 = n2
+        self._x_o2 = o2
+        self._x_ar = ar
+        self._x_ne = ne
+        self._x_h2o = h2o
+        self._x_co2 = co2
+        self._x_co = co
+        self._x_so2 = so2
 
     @classmethod
     def air(cls):
@@ -32,14 +32,45 @@ class Mixture:
 
     def molar_mass(self):
         return MolarMass.from_mole_fractions(
-            n2=self._x_N2,
-            o2=self._x_O2,
-            ar=self._x_Ar,
-            ne=self._x_Ne,
-            h2o=self._x_H2O,
-            co2=self._x_CO2,
-            co=self._x_CO,
-            so2=self._x_SO2
+            n2=self._x_n2,
+            o2=self._x_o2,
+            ar=self._x_ar,
+            ne=self._x_ne,
+            h2o=self._x_h2o,
+            co2=self._x_co2,
+            co=self._x_co,
+            so2=self._x_so2
         )
 
+    # TODO: implement default calculation procedures for non-dissociated mixtures.
+    def molar_density(self, pressure, temperature):
+        """Calculate the molar density of the mixture in mol/m3."""
+        raise NotImplementedError
 
+    def density(self, pressure, temperature):
+        """Calculate the mass density of the mixture in kg/m3."""
+        raise NotImplementedError
+
+    def molar_heat_capacity(self, temperature):
+        """Calculate the isobaric heat capacity of the mixture in J/mol/K."""
+        raise NotImplementedError
+
+    def heat_capacity(self, temperature):
+        """Calculate the specific isobaric heat capacity of the mixture in J/kg/K."""
+        raise NotImplementedError
+
+    def molar_enthalpy(self, temperature):
+        """Calculate the molar enthalpy of the mixture in J/mol."""
+        raise NotImplementedError
+
+    def enthalpy(self, temperature):
+        """Calculate the specific enthalpy of the mixture in J/kg."""
+        raise NotImplementedError
+
+    def molar_entropy(self, temperature):
+        """Calculate the molar entropy of the mixture in J/mol/K."""
+        raise NotImplementedError
+
+    def entropy(self, temperature):
+        """Calculate the soecific entropy of the mixture in J/kg/K."""
+        raise NotImplementedError

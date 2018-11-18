@@ -10,7 +10,7 @@ temperature_range = (lower_temperature_limit, upper_temperature_limit)
 
 universal_gas_constant = R_m = 8.314472  # [J/mol/K]
 
-components = {"N2", "O2", "Ar", "Ne", "H2O", "CO2", "CO", "SO2"}
+components = {"n2", "o2", "ar", "ne", "h2o", "co2", "co", "so2"}
 
 
 class MolarMass:

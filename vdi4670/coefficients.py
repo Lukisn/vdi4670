@@ -50,3 +50,15 @@ class A:
     def __getitem__(self, key):
         component, index = key
         return self.__values[component][index]
+
+
+class C:
+    """Coefficients c_k,i in J/mol."""
+
+    pass
+
+
+class D:
+    """Coefficients d_k,i in J/mol/K."""
+
+    pass
