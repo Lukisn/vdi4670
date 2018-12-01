@@ -44,8 +44,8 @@ class TestA:
         assert isinstance(A(), A)
 
     def test_indexing_in_range_succeeds(self, a):
-        assert a["n2", 1] == 2.4e6  # first
-        assert a["n2", 10] == 6.6e3  # last
+        assert a["n2", 1] == 2.475830346e6  # first
+        assert a["n2", 10] == 6.622545214e3  # last
 
     def test_indexing_out_of_range_fails(self, a):
         with pytest.raises(KeyError):

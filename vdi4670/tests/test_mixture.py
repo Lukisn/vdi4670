@@ -18,8 +18,13 @@ class TestMixture:
     def test_init_mole_fractions_succeeds(self):
         n2 = Mixture(n2=1)
         assert isinstance(n2, Mixture)
-        assert n2._x_n2 == 1
-        assert n2._x_o2 == 0
+        assert n2.x["n2"] == 1
+        assert n2.x["o2"] == 0
+
+    def test_molar_heat_capacity(self):
+        n2 = Mixture(n2=1)
+        print(n2.molar_heat_capacity(300))
+        print(n2.heat_capacity(300))
 
 
 class TestExamples:
