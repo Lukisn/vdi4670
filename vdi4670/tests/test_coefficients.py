@@ -2,6 +2,7 @@
 """Unit test module for testing coefficient classes."""
 
 import pytest
+from .. import ureg, Q_
 from ..coefficients import B, A
 
 
@@ -44,8 +45,8 @@ class TestA:
         assert isinstance(A(), A)
 
     def test_indexing_in_range_succeeds(self, a):
-        assert a["n2", 1] == 2.475830346e6  # first
-        assert a["n2", 10] == 6.622545214e3  # last
+        assert a["n2", 1] == Q_(2.475830346e6, ureg.joule / (ureg.mol * ureg.kelvin))  # first
+        assert a["n2", 10] == Q_(6.622545214e3, ureg.joule / (ureg.mol * ureg.kelvin))  # last
 
     def test_indexing_out_of_range_fails(self, a):
         with pytest.raises(KeyError):

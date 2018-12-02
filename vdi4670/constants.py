@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 """constants module."""
 
-reference_temperature = T_0 = 273.15  # [K]
-reference_pressure = p_0 = 0.101325  # [MPa]
+from . import ureg, Q_
 
-lower_temperature_limit = T_min = 200  # [K]
-upper_temperature_limit = T_max = 3300  # [K]
+reference_temperature = T_0 = Q_(273.15, ureg.kelvin)  # [K]
+reference_pressure = p_0 = Q_(0.101325, ureg.megapascal)  # [MPa]
+
+lower_temperature_limit = T_min = Q_(200, ureg.kelvin)  # [K]
+upper_temperature_limit = T_max = Q_(3300, ureg.kelvin)  # [K]
 temperature_range = (lower_temperature_limit, upper_temperature_limit)
 
-universal_gas_constant = R_m = 8.314472  # [J/mol/K]
+universal_gas_constant = R_m = Q_(8.314472, ureg.joule / (ureg.mol * ureg.kelvin))  # [J/mol/K]
 
 components = {"n2", "o2", "ar", "ne", "h2o", "co2", "co", "so2"}
 
@@ -16,14 +18,14 @@ components = {"n2", "o2", "ar", "ne", "h2o", "co2", "co", "so2"}
 class MolarMass:
     """Molar masses for components and mixtures in kg/mol."""
 
-    n2 = 28.01348e-3
-    o2 = 31.9988e-3
-    ar = 39.938e-3
-    ne = 20.1797e-3
-    h2o = 18.01528e-3
-    co2 = 44.0095e-3
-    co = 28.0101e-3
-    so2 = 64.0648e-3
+    n2 = Q_(8.01348e-3, ureg.kg / ureg.mol)
+    o2 = Q_(31.9988e-3, ureg.kg / ureg.mol)
+    ar = Q_(39.938e-3, ureg.kg / ureg.mol)
+    ne = Q_(20.1797e-3, ureg.kg / ureg.mol)
+    h2o = Q_(18.01528e-3, ureg.kg / ureg.mol)
+    co2 = Q_(44.0095e-3, ureg.kg / ureg.mol)
+    co = Q_(28.0101e-3, ureg.kg / ureg.mol)
+    so2 = Q_(64.0648e-3, ureg.kg / ureg.mol)
 
     @staticmethod
     def from_mole_fractions(n2=0, o2=0, ar=0, ne=0, h2o=0, co2=0, co=0, so2=0):

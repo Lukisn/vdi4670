@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 """mixture module."""
 
-# from . import ureg, Q_
-from .constants import *
+from . import ureg, Q_
+from .constants import MolarMass, R_m, components, T_0
 from .coefficients import A, B
 
 a = A()
@@ -65,7 +65,9 @@ class Mixture:
         rho_m = p / (R_m T)
         """
         p, T = pressure, temperature
-        return p / (R_m * T)
+        rho_m = p / (R_m * T)
+        rho_m.ito(ureg.mol / ureg.meter ** 3)
+        return rho_m
 
     def density(self, pressure, temperature):
         """Calculate the mass density of the mixture in kg/m3 (rho_mix).
@@ -74,24 +76,30 @@ class Mixture:
         """
         p, T = pressure, temperature
         M_mix = self.molar_mass()
-        return p * M_mix / (R_m * T)
+        rho_mix = p * M_mix / (R_m * T)
+        rho_mix.ito(ureg.kilogram / ureg.meter ** 3)
+        return rho_mix
 
     def molar_heat_capacity(self, temperature):
         """Calculate the isobaric heat capacity of the mixture in J/mol/K (c_p,m,mix)."""
         T = temperature
-        c_pmmix = 0
+        c_pmmix = Q_(0, ureg.joule / ureg.mol / ureg.kelvin)
         for k in components:
-            c_pmk = 0
+            c_pmk = Q_(0, ureg.joule / ureg.mol / ureg.kelvin)
             for i in range(1, 11):
-                c_pmk += a[k, i] * (T / T_0) ** b[i]
+                term = a[k, i] * (T / T_0) ** b[i]
+                c_pmk += term
             c_pmmix += self.x[k] * c_pmk
+        c_pmmix.ito(ureg.joule / ureg.mol / ureg.kelvin)
         return c_pmmix
 
     def heat_capacity(self, temperature):
         """Calculate the specific isobaric heat capacity of the mixture in J/kg/K (c_p,mix)."""
-        c_p_m_mix = self.molar_heat_capacity(temperature)
+        c_pmmix = self.molar_heat_capacity(temperature)
         M_mix = self.molar_mass()
-        return c_p_m_mix / M_mix
+        c_pmix = c_pmmix / M_mix
+        c_pmix.ito(ureg.joule / ureg.meter ** 3 / ureg.kelvin)
+        return c_pmix
 
     # TODO: implement default calculation procedures for non-dissociated mixtures.
     def molar_enthalpy(self, temperature):
