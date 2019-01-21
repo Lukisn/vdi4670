@@ -2,6 +2,7 @@
 """mixture module."""
 
 from math import log
+from warnings import warn
 from . import ureg, Q_
 from .constants import MolarMass, R_m, components, T_0, p_0
 from .coefficients import A, B, C, D
@@ -15,11 +16,21 @@ d = D()
 class Mixture:
     """Mixture for calculating thermodynamic properties without dissociation."""
 
+    # TODO: reasses handling numerical issues with the total mole fraction that should be 1! (see air constructor!)
     def __init__(self, n2=0., o2=0., ar=0., ne=0., h2o=0., co2=0., co=0., so2=0.):
         """Initialize mixture from mole fractions."""
         x = n2 + o2 + ar + ne + h2o + co2 + co + so2
-        if x != 1:
-            raise ValueError("mole fractions should sum up to a total of 1!")
+        rest = 1 - x
+        if rest < 0:
+            msg = f"Given mole fractions sum up to more than 1!"
+            raise ValueError(msg)
+        if rest > 1e-6:
+            msg = f"Given mole fractions don't sum up to 1! Rest is {rest} > 1e-6!"
+            raise ValueError(msg)
+        else:  # tolerate slight deviations in the total mole fraction
+            msg = f"Given mole fractions don't sum up to 1! Rest is {rest} and will be added to argon part."
+            warn(msg)
+            ar += rest
         self.x = {
             "n2": n2,
             "o2": o2,
@@ -34,7 +45,8 @@ class Mixture:
     @classmethod
     def air(cls):
         """Initialize the standard mixture for air according to ISO 2533."""
-        return cls(n2=0.781109, o2=0.209548, ar=0.009343)
+        # return cls(n2=0.781109, o2=0.209548, ar=0.009343)  # values from text
+        return cls(n2=0.781109, o2=0.209548, ar=0.009342999)
 
     @classmethod
     def example_combustion_gas(cls):
@@ -63,7 +75,8 @@ class Mixture:
         R_mix = R_m / M_mix  - formula (7)
         """
         M_mix = self.molar_mass()
-        return R_m / M_mix
+        R_mix = R_m / M_mix
+        return R_mix
 
     @staticmethod
     def molar_density(p, t):
@@ -73,6 +86,8 @@ class Mixture:
 
         rho_m = p / (R_m * T)  - formula (8)
         """
+        # p.ito(ureg.megapascal)
+        t.ito(ureg.kelvin)
         rho_m = p / (R_m * t)
         rho_m.ito(ureg.mol / ureg.meter ** 3)
         return rho_m
@@ -82,6 +97,8 @@ class Mixture:
 
         rho_mix = p / (R_mix T) = p M_mix / (R_m T)  - formula (9)
         """
+        # p.ito(ureg.megapascal)
+        t.ito(ureg.kelvin)
         M_mix = self.molar_mass()
         rho_mix = p * M_mix / (R_m * t)
         rho_mix.ito(ureg.kilogram / ureg.meter ** 3)
@@ -94,6 +111,7 @@ class Mixture:
         c_p,m,k(T) = sum_i=1..10(a_k,i * (T / T_0) ** b_i)  - formula (10)
         """
         unit = ureg.joule / (ureg.mol * ureg.kelvin)
+        t.ito(ureg.kelvin)
         c_pmmix = Q_(0, unit)
         for k in components:
             c_pmk = Q_(0, unit)
@@ -109,10 +127,12 @@ class Mixture:
 
         c_p,mix = c_p,m,mix(T,x) / M_mix  - formula (13)
         """
+        t.ito(ureg.kelvin)
         c_pmmix = self.molar_heat_capacity(t)
         M_mix = self.molar_mass()
         c_pmix = c_pmmix / M_mix
-        c_pmix.ito(ureg.joule / ureg.meter ** 3 / ureg.kelvin)
+        # c_pmix.ito(ureg.joule / ureg.meter ** 3 / ureg.kelvin)
+        c_pmix.ito(ureg.joule / ureg.kilogram / ureg.kelvin)
         return c_pmix
 
     def molar_enthalpy(self, t):
@@ -122,6 +142,7 @@ class Mixture:
         h_m,k(T) = c_k,0 + sum_i=1..10(c_k,i * (T / T_0) ** (b_i + 1))  - formula (14)
         """
         unit = ureg.joule / ureg.mol
+        t.ito(ureg.kelvin)
         h_mmix = Q_(0, unit)
         for k in components:
             h_mk = c[k, 0]
@@ -137,10 +158,12 @@ class Mixture:
 
         h_mix = h_m,mix / M_mix  - formula (17)
         """
+        t.ito(ureg.kelvin)
         h_mmix = self.molar_enthalpy(t)
         M_mix = self.molar_mass()
         h_mix = h_mmix / M_mix
         h_mix.ito(ureg.joule / ureg.kilogram)
+        return h_mix
 
     def molar_entropy(self, p, t):
         """Calculate the molar entropy of the mixture in J/(mol.K).
@@ -151,6 +174,8 @@ class Mixture:
                      + sum_i=2..10(d_k,i * (T / T_0) ** b_i)  - formula (18)
         """
         unit = ureg.joule / (ureg.mol * ureg.kelvin)
+        # p.ito(ureg.megapascal)
+        t.ito(ureg.kelvin)
         sum1 = Q_(0, unit)
         sum2 = Q_(0, ureg.dimensionless)
         for k in components:
@@ -169,7 +194,9 @@ class Mixture:
 
         s_mix = s_m,mix / M_mix  - formula (21)
         """
-        s_mmix = self.molar_entropy(t, p)
+        # p.ito(ureg.megapascal)
+        t.ito(ureg.kelvin)
+        s_mmix = self.molar_entropy(p, t)
         M_mix = self.molar_mass()
         s_mix = s_mmix / M_mix
         s_mix.ito(ureg.joule / (ureg.kilogram * ureg.kelvin))

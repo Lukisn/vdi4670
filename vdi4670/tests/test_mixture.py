@@ -247,7 +247,6 @@ class TestExamplesOne(TestExamplesBase):
         self.assert_approx(result, expected, rel_err=1e-4)
 
 
-
 class TestExamplesTwo(TestExamplesBase):
     """Test case for testing the second set of mixture examples given in the VDI 4670 document."""
 
