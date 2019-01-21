@@ -16,9 +16,9 @@ components = {"n2", "o2", "ar", "ne", "h2o", "co2", "co", "so2"}
 
 
 class MolarMass:
-    """Molar masses for components and mixtures in kg/mol."""
+    """Molar masses for components and mixtures in kg/mol (from table 1)."""
 
-    n2 = Q_(8.01348e-3, ureg.kg / ureg.mol)
+    n2 = Q_(28.01348e-3, ureg.kg / ureg.mol)
     o2 = Q_(31.9988e-3, ureg.kg / ureg.mol)
     ar = Q_(39.938e-3, ureg.kg / ureg.mol)
     ne = Q_(20.1797e-3, ureg.kg / ureg.mol)
@@ -29,7 +29,7 @@ class MolarMass:
 
     @staticmethod
     def from_mole_fractions(n2=0, o2=0, ar=0, ne=0, h2o=0, co2=0, co=0, so2=0):
-        """Calculate the molar mass for the given mixture in mole fractions."""
+        """Calculate the molar mass for the given mixture in mole fractions in kg/mol."""
         total = n2 * MolarMass.n2
         total += o2 * MolarMass.o2
         total += ar * MolarMass.ar
@@ -42,7 +42,7 @@ class MolarMass:
 
     @staticmethod
     def from_mass_fractions(n2=0, o2=0, ar=0, ne=0, h2o=0, co2=0, co=0, so2=0):
-        """Calculate the molar mass for the given mixture in mass fractions."""
+        """Calculate the molar mass for the given mixture in mass fractions in kg/mol."""
         total = n2 / MolarMass.n2
         total += o2 / MolarMass.o2
         total += ar / MolarMass.ar
@@ -53,3 +53,26 @@ class MolarMass:
         total += so2 / MolarMass.so2
         result = 1 / total
         return result
+
+
+class SpecificGasConstant:
+    """Specific gas constants for components and mixtures in J/(kg.K) (from table 1)."""
+
+    n2 = Q_(296.8025, ureg.joule / (ureg.kg * ureg.kelvin))
+    o2 = Q_(259.8370, ureg.joule / (ureg.kg * ureg.kelvin))
+    ar = Q_(208.1324, ureg.joule / (ureg.kg * ureg.kelvin))
+    ne = Q_(412.0216, ureg.joule / (ureg.kg * ureg.kelvin))
+    h2o = Q_(461.5233, ureg.joule / (ureg.kg * ureg.kelvin))
+    co2 = Q_(188.9245, ureg.joule / (ureg.kg * ureg.kelvin))
+    co = Q_(296.8384, ureg.joule / (ureg.kg * ureg.kelvin))
+    so2 = Q_(129.7822, ureg.joule / (ureg.kg * ureg.kelvin))
+
+    @staticmethod
+    def from_mole_fractions(n2=0, o2=0, ar=0, ne=0, h2o=0, co2=0, co=0, so2=0):
+        """Calculate the specific gas constant for the given mixture in mole fractions in J/(kg.K)."""
+        return R_m / MolarMass.from_mole_fractions(n2, o2, ar, ne, h2o, co2, co, so2)
+
+    @staticmethod
+    def from_mass_fractions(n2=0, o2=0, ar=0, ne=0, h2o=0, co2=0, co=0, so2=0):
+        """Calculate the specific gas constant for the given mixture in mole fractions in J/(kg.K)."""
+        return R_m / MolarMass.from_mass_fractions(n2, o2, ar, ne, h2o, co2, co, so2)
