@@ -3,5 +3,5 @@
 
 import pint
 
-ureg = pint.UnitRegistry()  # TODO: implement units throughout package
+ureg = pint.UnitRegistry()
 Q_ = ureg.Quantity
