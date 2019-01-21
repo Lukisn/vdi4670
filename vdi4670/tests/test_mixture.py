@@ -24,7 +24,7 @@ class TestMixture:
         assert n2.x["o2"] == 0
 
 
-class PintApprox:
+class TestExamplesBase:
     """Class providing functionality for testing pint quantities for approximate equality."""
 
     # Units
@@ -42,7 +42,7 @@ class PintApprox:
     co2 = Mixture(co2=1.0)
     co = Mixture(co=1.0)
     so2 = Mixture(so2=1.0)
-    test_gas = Mixture.test_gas()
+    combustion_gas = Mixture.example_combustion_gas()
 
     # Test Function
     @staticmethod
@@ -51,39 +51,210 @@ class PintApprox:
         assert result.magnitude == approx(expected.magnitude, rel=rel_err, abs=abs_err)
 
 
-class TestExamplesOne(PintApprox):
+class TestExamplesOne(TestExamplesBase):
     """Test case for testing the first set of mixture examples given in the VDI 4670 document."""
 
     # example point 1:
     p, t = Q_(0.1, ureg.megapascal), Q_(1000, ureg.kelvin)
 
-    def test_nitrogen_density(self):
+    # Nitrogen
+    def test_n2_density(self):
         expected = Q_(12.027, self.density_unit)
         result = self.n2.molar_density(p=self.p, t=self.t)
         self.assert_approx(result, expected, rel_err=1e-4)
 
-    def test_nitrogen_heat_capacity(self):
+    def test_n2_heat_capacity(self):
         expected = Q_(32.698, self.heat_capacity_unit)
         result = self.n2.molar_heat_capacity(t=self.t)
         self.assert_approx(result, expected, rel_err=1e-4)
 
-    def test_nitrogen_enthalpy(self):
+    def test_n2_enthalpy(self):
         expected = Q_(22190.5, self.enthalpy_unit)
         result = self.n2.molar_enthalpy(t=self.t)
         self.assert_approx(result, expected, rel_err=1e-2)
 
-    def test_nitrogen_entropy(self):
+    def test_n2_entropy(self):
         expected = Q_(39.221, self.entropy_unit)
         result = self.n2.molar_entropy(p=self.p, t=self.t)
         self.assert_approx(result, expected, rel_err=1e-4)
 
+    # Oxygen
+    def test_o2_density(self):
+        expected = Q_(12.027, self.density_unit)
+        result = self.o2.molar_density(p=self.p, t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
 
-class TestExamplesTwo(PintApprox):
+    def test_o2_heat_capacity(self):
+        expected = Q_(34.880, self.heat_capacity_unit)
+        result = self.o2.molar_heat_capacity(t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    def test_o2_enthalpy(self):
+        expected = Q_(23439.2, self.enthalpy_unit)
+        result = self.o2.molar_enthalpy(t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-2)
+
+    def test_o2_entropy(self):
+        expected = Q_(41.112, self.entropy_unit)
+        result = self.o2.molar_entropy(p=self.p, t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    # Argon
+    def test_ar_density(self):
+        expected = Q_(12.027, self.density_unit)
+        result = self.ar.molar_density(p=self.p, t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    def test_ar_heat_capacity(self):
+        expected = Q_(20.786, self.heat_capacity_unit)
+        result = self.ar.molar_heat_capacity(t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    def test_ar_enthalpy(self):
+        expected = Q_(15108.4, self.enthalpy_unit)
+        result = self.ar.molar_enthalpy(t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-2)
+
+    def test_ar_entropy(self):
+        expected = Q_(27.084, self.entropy_unit)
+        result = self.ar.molar_entropy(p=self.p, t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    # Neon
+    def test_ne_density(self):
+        expected = Q_(12.027, self.density_unit)
+        result = self.ne.molar_density(p=self.p, t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    def test_ne_heat_capacity(self):
+        expected = Q_(20.786, self.heat_capacity_unit)
+        result = self.ne.molar_heat_capacity(t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    def test_ne_enthalpy(self):
+        expected = Q_(15108.4, self.enthalpy_unit)
+        result = self.ne.molar_enthalpy(t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-2)
+
+    def test_ne_entropy(self):
+        expected = Q_(27.084, self.entropy_unit)
+        result = self.ne.molar_entropy(p=self.p, t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    # Water
+    def test_h2o_density(self):
+        expected = Q_(12.027, self.density_unit)
+        result = self.h2o.molar_density(p=self.p, t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    def test_h2o_heat_capacity(self):
+        expected = Q_(41.295, self.heat_capacity_unit)
+        result = self.h2o.molar_heat_capacity(t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    def test_h2o_enthalpy(self):
+        expected = Q_(26841.3, self.enthalpy_unit)
+        result = self.h2o.molar_enthalpy(t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-2)
+
+    def test_h2o_entropy(self):
+        expected = Q_(46.953, self.entropy_unit)
+        result = self.h2o.molar_entropy(p=self.p, t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    # Carbon dioxide
+    def test_co2_density(self):
+        expected = Q_(12.027, self.density_unit)
+        result = self.co2.molar_density(p=self.p, t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    def test_co2_heat_capacity(self):
+        expected = Q_(54.316, self.heat_capacity_unit)
+        result = self.co2.molar_heat_capacity(t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    def test_co2_enthalpy(self):
+        expected = Q_(34319.4, self.enthalpy_unit)
+        result = self.co2.molar_enthalpy(t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-2)
+
+    def test_co2_entropy(self):
+        expected = Q_(58.830, self.entropy_unit)
+        result = self.co2.molar_entropy(p=self.p, t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    # Carbon monoxide
+    def test_co_density(self):
+        expected = Q_(12.027, self.density_unit)
+        result = self.co.molar_density(p=self.p, t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    def test_co_heat_capacity(self):
+        expected = Q_(33.186, self.heat_capacity_unit)
+        result = self.co.molar_heat_capacity(t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    def test_co_enthalpy(self):
+        expected = Q_(22414.6, self.enthalpy_unit)
+        result = self.co.molar_enthalpy(t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-2)
+
+    def test_co_entropy(self):
+        expected = Q_(39.538, self.entropy_unit)
+        result = self.co.molar_entropy(p=self.p, t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    # Sulphur dioxide
+    def test_so2_density(self):
+        expected = Q_(12.027, self.density_unit)
+        result = self.so2.molar_density(p=self.p, t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    def test_so2_heat_capacity(self):
+        expected = Q_(54.288, self.heat_capacity_unit)
+        result = self.so2.molar_heat_capacity(t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    def test_so2_enthalpy(self):
+        expected = Q_(35329.5, self.enthalpy_unit)
+        result = self.so2.molar_enthalpy(t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-2)
+
+    def test_so2_entropy(self):
+        expected = Q_(60.984, self.entropy_unit)
+        result = self.so2.molar_entropy(p=self.p, t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    # Combustion gas
+    def test_combustion_gas_density(self):
+        expected = Q_(12.027, self.density_unit)
+        result = self.combustion_gas.molar_density(p=self.p, t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    def test_combustion_gas_heat_capacity(self):
+        expected = Q_(36.641, self.heat_capacity_unit)
+        result = self.combustion_gas.molar_heat_capacity(t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    def test_combustion_gas_enthalpy(self):
+        expected = Q_(24381.7, self.enthalpy_unit)
+        result = self.combustion_gas.molar_enthalpy(t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-2)
+
+    def test_combustion_gas_entropy(self):
+        expected = Q_(52.815, self.entropy_unit)
+        result = self.combustion_gas.molar_entropy(p=self.p, t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+
+
+class TestExamplesTwo(TestExamplesBase):
     """Test case for testing the second set of mixture examples given in the VDI 4670 document."""
 
     # example point 2:
     p, t = Q_(2.0, ureg.megapascal), Q_(2000, ureg.kelvin)
 
+    # Nitrogen
     def test_nitrogen_density(self):
         expected = Q_(120.272, ureg.mol / ureg.meter ** 3)
         result = self.n2.molar_density(p=self.p, t=self.t)
@@ -102,4 +273,172 @@ class TestExamplesTwo(PintApprox):
     def test_nitrogen_entropy(self):
         expected = Q_(38.219, self.entropy_unit)
         result = self.n2.molar_entropy(p=self.p, t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    # Oxygen
+    def test_o2_density(self):
+        expected = Q_(120.272, self.density_unit)
+        result = self.o2.molar_density(p=self.p, t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    def test_o2_heat_capacity(self):
+        expected = Q_(37.783, self.heat_capacity_unit)
+        result = self.o2.molar_heat_capacity(t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    def test_o2_enthalpy(self):
+        expected = Q_(59935.0, self.enthalpy_unit)
+        result = self.o2.molar_enthalpy(t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-2)
+
+    def test_o2_entropy(self):
+        expected = Q_(41.389, self.entropy_unit)
+        result = self.o2.molar_entropy(p=self.p, t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    # Argon
+    def test_ar_density(self):
+        expected = Q_(120.272, self.density_unit)
+        result = self.ar.molar_density(p=self.p, t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    def test_ar_heat_capacity(self):
+        expected = Q_(20.786, self.heat_capacity_unit)
+        result = self.ar.molar_heat_capacity(t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    def test_ar_enthalpy(self):
+        expected = Q_(35894.6, self.enthalpy_unit)
+        result = self.ar.molar_enthalpy(t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-2)
+
+    def test_ar_entropy(self):
+        expected = Q_(16.584, self.entropy_unit)
+        result = self.ar.molar_entropy(p=self.p, t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    # Neon
+    def test_ne_density(self):
+        expected = Q_(120.272, self.density_unit)
+        result = self.ne.molar_density(p=self.p, t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    def test_ne_heat_capacity(self):
+        expected = Q_(20.786, self.heat_capacity_unit)
+        result = self.ne.molar_heat_capacity(t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    def test_ne_enthalpy(self):
+        expected = Q_(35894.6, self.enthalpy_unit)
+        result = self.ne.molar_enthalpy(t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-2)
+
+    def test_ne_entropy(self):
+        expected = Q_(16.584, self.entropy_unit)
+        result = self.ne.molar_entropy(p=self.p, t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    # Water
+    def test_h2o_density(self):
+        expected = Q_(120.272, self.density_unit)
+        result = self.h2o.molar_density(p=self.p, t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    def test_h2o_heat_capacity(self):
+        expected = Q_(51.763, self.heat_capacity_unit)
+        result = self.h2o.molar_heat_capacity(t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    def test_h2o_enthalpy(self):
+        expected = Q_(73880.3, self.enthalpy_unit)
+        result = self.h2o.molar_enthalpy(t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-2)
+
+    def test_h2o_entropy(self):
+        expected = Q_(54.226, self.entropy_unit)
+        result = self.h2o.molar_entropy(p=self.p, t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    # Carbon dioxide
+    def test_co2_density(self):
+        expected = Q_(120.272, self.density_unit)
+        result = self.co2.molar_density(p=self.p, t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    def test_co2_heat_capacity(self):
+        expected = Q_(60.350, self.heat_capacity_unit)
+        result = self.co2.molar_heat_capacity(t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    def test_co2_enthalpy(self):
+        expected = Q_(92376.5, self.enthalpy_unit)
+        result = self.co2.molar_enthalpy(t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-2)
+
+    def test_co2_entropy(self):
+        expected = Q_(73.927, self.entropy_unit)
+        result = self.co2.molar_entropy(p=self.p, t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    # Carbon monoxide
+    def test_co_density(self):
+        expected = Q_(120.272, self.density_unit)
+        result = self.co.molar_density(p=self.p, t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    def test_co_heat_capacity(self):
+        expected = Q_(36.234, self.heat_capacity_unit)
+        result = self.co.molar_heat_capacity(t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    def test_co_enthalpy(self):
+        expected = Q_(57459.5, self.enthalpy_unit)
+        result = self.co.molar_enthalpy(t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-2)
+
+    def test_co_entropy(self):
+        expected = Q_(38.802, self.entropy_unit)
+        result = self.co.molar_entropy(p=self.p, t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    # Sulphur dioxide
+    def test_so2_density(self):
+        expected = Q_(120.272, self.density_unit)
+        result = self.so2.molar_density(p=self.p, t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    def test_so2_heat_capacity(self):
+        expected = Q_(57.893, self.heat_capacity_unit)
+        result = self.so2.molar_heat_capacity(t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    def test_so2_enthalpy(self):
+        expected = Q_(91880.0, self.enthalpy_unit)
+        result = self.so2.molar_enthalpy(t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-2)
+
+    def test_so2_entropy(self):
+        expected = Q_(75.133, self.entropy_unit)
+        result = self.so2.molar_entropy(p=self.p, t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    # Combustion gas
+    def test_combustion_gas_density(self):
+        expected = Q_(120.272, self.density_unit)
+        result = self.combustion_gas.molar_density(p=self.p, t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    def test_combustion_gas_heat_capacity(self):
+        expected = Q_(41.343, self.heat_capacity_unit)
+        result = self.combustion_gas.molar_heat_capacity(t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-4)
+
+    def test_combustion_gas_enthalpy(self):
+        expected = Q_(63763.2, self.enthalpy_unit)
+        result = self.combustion_gas.molar_enthalpy(t=self.t)
+        self.assert_approx(result, expected, rel_err=1e-2)
+
+    def test_combustion_gas_entropy(self):
+        expected = Q_(55.017, self.entropy_unit)
+        result = self.combustion_gas.molar_entropy(p=self.p, t=self.t)
         self.assert_approx(result, expected, rel_err=1e-4)

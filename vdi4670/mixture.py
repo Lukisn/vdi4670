@@ -13,7 +13,7 @@ d = D()
 
 
 class Mixture:
-    """Mixture class."""
+    """Mixture for calculating thermodynamic properties without dissociation."""
 
     def __init__(self, n2=0., o2=0., ar=0., ne=0., h2o=0., co2=0., co=0., so2=0.):
         """Initialize mixture from mole fractions."""
@@ -37,8 +37,8 @@ class Mixture:
         return cls(n2=0.781109, o2=0.209548, ar=0.009343)
 
     @classmethod
-    def test_gas(cls):
-        """Initialize the test gas mixture according to VDI 4670-1."""
+    def example_combustion_gas(cls):
+        """Initialize the example combustion gas mixture used in VDI 4670-1."""
         return cls(n2=0.6, o2=0.1, ar=0.01, h2o=0.17, co2=0.1, co=0.01, so2=0.01)
 
     def molar_mass(self):
