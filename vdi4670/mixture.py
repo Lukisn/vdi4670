@@ -2,7 +2,6 @@
 """mixture module."""
 
 from math import log
-
 from . import ureg, Q_
 from .constants import MolarMass, R_m, components, T_0, p_0
 from .coefficients import A, B, C, D
@@ -67,58 +66,56 @@ class Mixture:
         return R_m / M_mix
 
     @staticmethod
-    def molar_density(pressure, temperature):
+    def molar_density(p, t):
         """Calculate the molar density of the mixture (rho_m) in mol/m3.
 
         This value is independent of the composition of the mixture.
 
         rho_m = p / (R_m * T)  - formula (8)
         """
-        p, T = pressure, temperature
-        rho_m = p / (R_m * T)
+        rho_m = p / (R_m * t)
         rho_m.ito(ureg.mol / ureg.meter ** 3)
         return rho_m
 
-    def density(self, pressure, temperature):
+    def density(self, p, t):
         """Calculate the mass density of the mixture (rho_mix) in kg/m3.
 
         rho_mix = p / (R_mix T) = p M_mix / (R_m T)  - formula (9)
         """
-        p, T = pressure, temperature
         M_mix = self.molar_mass()
-        rho_mix = p * M_mix / (R_m * T)
+        rho_mix = p * M_mix / (R_m * t)
         rho_mix.ito(ureg.kilogram / ureg.meter ** 3)
         return rho_mix
 
-    def molar_heat_capacity(self, temperature):
+    def molar_heat_capacity(self, t):
         """Calculate the isobaric heat capacity of the mixture (c_p,m,mix) in J/(mol.K).
 
         c_p,m,mix(T,x) = sum_k=1..K(x_k * c_p,m,k(T))  - formula (11)
         c_p,m,k(T) = sum_i=1..10(a_k,i * (T / T_0) ** b_i)  - formula (10)
         """
-        T = temperature
-        c_pmmix = Q_(0, ureg.joule / (ureg.mol * ureg.kelvin))
+        unit = ureg.joule / (ureg.mol * ureg.kelvin)
+        c_pmmix = Q_(0, unit)
         for k in components:
-            c_pmk = Q_(0, ureg.joule / (ureg.mol * ureg.kelvin))
+            c_pmk = Q_(0, unit)
             for i in range(1, 11):
-                term = a[k, i] * (T / T_0) ** b[i]
+                term = a[k, i] * (t / T_0) ** b[i]
                 c_pmk += term
             c_pmmix += self.x[k] * c_pmk
-        c_pmmix.ito(ureg.joule / (ureg.mol * ureg.kelvin))
+        c_pmmix.ito(unit)
         return c_pmmix
 
-    def heat_capacity(self, temperature):
+    def heat_capacity(self, t):
         """Calculate the specific isobaric heat capacity of the mixture (c_p,mix) in J/(kg.K).
 
         c_p,mix = c_p,m,mix(T,x) / M_mix  - formula (13)
         """
-        c_pmmix = self.molar_heat_capacity(temperature)
+        c_pmmix = self.molar_heat_capacity(t)
         M_mix = self.molar_mass()
         c_pmix = c_pmmix / M_mix
         c_pmix.ito(ureg.joule / ureg.meter ** 3 / ureg.kelvin)
         return c_pmix
 
-    def molar_enthalpy(self, temp):
+    def molar_enthalpy(self, t):
         """Calculate the molar enthalpy of the mixture (h_m,mix) in J/mol.
 
         h_m,mix(T,x) = sum_k=1..K(x_k * h_m,k(T))  - formula (15)
@@ -129,23 +126,23 @@ class Mixture:
         for k in components:
             h_mk = c[k, 0]
             for i in range(1, 11):
-                term = c[k, i] * (temp / T_0) ** (b[i] + 1)
+                term = c[k, i] * (t / T_0) ** (b[i] + 1)
                 h_mk += term
             h_mmix += self.x[k] * h_mk
         h_mmix.ito(unit)
         return h_mmix
 
-    def enthalpy(self, temp):
+    def enthalpy(self, t):
         """Calculate the specific enthalpy of the mixture (h_mix) in J/kg.
 
         h_mix = h_m,mix / M_mix  - formula (17)
         """
-        h_mmix = self.molar_enthalpy(temp)
+        h_mmix = self.molar_enthalpy(t)
         M_mix = self.molar_mass()
         h_mix = h_mmix / M_mix
         h_mix.ito(ureg.joule / ureg.kilogram)
 
-    def molar_entropy(self, t, p):
+    def molar_entropy(self, p, t):
         """Calculate the molar entropy of the mixture in J/(mol.K).
 
         s_m,mix(T,p,x) = sum_k=1..K(x_k * s_m,k(T,p))
@@ -154,20 +151,20 @@ class Mixture:
                      + sum_i=2..10(d_k,i * (T / T_0) ** b_i)  - formula (18)
         """
         unit = ureg.joule / (ureg.mol * ureg.kelvin)
-        s_mmix = Q_(0, unit)
         sum1 = Q_(0, unit)
-        sum2 = Q_(0, unit)
+        sum2 = Q_(0, ureg.dimensionless)
         for k in components:
             s_mk = d[k, 0] + d[k, 1] * log(t / T_0) - R_m * log(p / p_0)
             for i in range(2, 11):
                 s_mk += d[k, i] * (t / T_0) ** b[i]
             sum1 += self.x[k] * s_mk
-            sum2 += self.x[k] * log(self.x[k])
+            if self.x[k] != 0:
+                sum2 += self.x[k] * log(self.x[k])
         s_mmix = sum1 - R_m * sum2
         s_mmix.ito(unit)
         return s_mmix
 
-    def entropy(self, t, p):
+    def entropy(self, p, t):
         """Calculate the specific entropy of the mixture in J/(kg.K).
 
         s_mix = s_m,mix / M_mix  - formula (21)
