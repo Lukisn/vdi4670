@@ -9,8 +9,10 @@ def main():
     p = vdi4670.Q_(1.0, vdi4670.ureg.bar)
     t = vdi4670.Q_(20, vdi4670.ureg.celsius)
 
-    air = vdi4670.mixture.Mixture.air()
-    print(air)
+    air = vdi4670.mixture.Mixture.init_iso_air()
+    print(str(air))
+    print(repr(air))
+    print()
 
     print(f"M_mix = {air.molar_mass()}")
     print(f"rho = {air.density(p, t)}")

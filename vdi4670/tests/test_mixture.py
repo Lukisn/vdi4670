@@ -9,19 +9,57 @@ from ..mixture import Mixture
 class TestMixture:
     """Test case for testing mixture class."""
 
-    def test_init_mole_fractions_fails_1(self):
+    def test_init_no_mole_fractions_fails(self):
         with raises(ValueError):
             Mixture()
 
-    def test_init_mole_fractions_fails_2(self):
+    def test_init_high_mole_fractions_fails(self):
+        x = 1 + 1e-5
         with raises(ValueError):
-            Mixture(n2=1.1)
+            Mixture(n2=x)
 
-    def test_init_mole_fractions_succeeds(self):
+    def test_init_low_mole_fractions_fails(self):
+        x = 1 - 1e-5
+        with raises(ValueError):
+            Mixture(n2=x)
+
+    def test_init_high_mole_fractions_succeeds(self):
+        x = 1 + 1e-7
+        n2 = Mixture(n2=x)
+        assert isinstance(n2, Mixture)
+        assert n2.x["n2"] == x
+        assert n2.x["o2"] == 0
+
+    def test_init_low_mole_fractions_succeeds(self):
+        x = 1 - 1e-7
+        n2 = Mixture(n2=x)
+        assert isinstance(n2, Mixture)
+        assert n2.x["n2"] == x
+        assert n2.x["o2"] == 0
+
+    def test_init_exact_mole_fractions_succeeds(self):
         n2 = Mixture(n2=1)
         assert isinstance(n2, Mixture)
         assert n2.x["n2"] == 1
         assert n2.x["o2"] == 0
+
+    def test_init_air_succeeds(self):
+        air = Mixture.init_iso_air()
+        assert isinstance(air, Mixture)
+        assert air.x["n2"] == 0.781109
+        assert air.x["o2"] == 0.209548
+        assert air.x["ar"] == 0.009343
+
+    def test_init_gas_succeeds(self):
+        gas = Mixture.init_example_gas()
+        assert isinstance(gas, Mixture)
+        assert gas.x["n2"] == 0.6
+        assert gas.x["o2"] == 0.1
+        assert gas.x["ar"] == 0.01
+        assert gas.x["h2o"] == 0.17
+        assert gas.x["co2"] == 0.1
+        assert gas.x["co"] == 0.01
+        assert gas.x["so2"] == 0.01
 
 
 class TestExamplesBase:
@@ -42,7 +80,7 @@ class TestExamplesBase:
     co2 = Mixture(co2=1.0)
     co = Mixture(co=1.0)
     so2 = Mixture(so2=1.0)
-    combustion_gas = Mixture.example_combustion_gas()
+    combustion_gas = Mixture.init_example_gas()
 
     # Test Function
     @staticmethod

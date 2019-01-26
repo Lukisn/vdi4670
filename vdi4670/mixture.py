@@ -2,7 +2,6 @@
 """mixture module."""
 
 from math import log
-from warnings import warn
 from . import ureg, Q_
 from .constants import MolarMass, R_m, components, T_0, p_0
 from .coefficients import A, B, C, D
@@ -16,21 +15,14 @@ d = D()
 class Mixture:
     """Mixture for calculating thermodynamic properties without dissociation."""
 
-    # TODO: reasses handling numerical issues with the total mole fraction that should be 1! (see air constructor!)
-    def __init__(self, n2=0., o2=0., ar=0., ne=0., h2o=0., co2=0., co=0., so2=0.):
+    def __init__(self, n2=0., o2=0., ar=0., ne=0., h2o=0., co2=0., co=0., so2=0., tol=1e-6):
         """Initialize mixture from mole fractions."""
         x = n2 + o2 + ar + ne + h2o + co2 + co + so2
-        rest = 1 - x
-        if rest < 0:
-            msg = f"Given mole fractions sum up to more than 1!"
+        self.tol = tol
+        rest = abs(1 - x)
+        if rest > self.tol:
+            msg = f"Given mole fractions don't sum up to 1! Rest is {rest} (> {self.tol})."
             raise ValueError(msg)
-        if rest > 1e-6:
-            msg = f"Given mole fractions don't sum up to 1! Rest is {rest} > 1e-6!"
-            raise ValueError(msg)
-        else:  # tolerate slight deviations in the total mole fraction
-            msg = f"Given mole fractions don't sum up to 1! Rest is {rest} and will be added to argon part."
-            warn(msg)
-            ar += rest
         self.x = {
             "n2": n2,
             "o2": o2,
@@ -42,14 +34,23 @@ class Mixture:
             "so2": so2,
         }
 
-    @classmethod
-    def air(cls):
-        """Initialize the standard mixture for air according to ISO 2533."""
-        # return cls(n2=0.781109, o2=0.209548, ar=0.009343)  # values from text
-        return cls(n2=0.781109, o2=0.209548, ar=0.009342999)
+    def __str__(self):
+        """Readable string representation."""
+        comps = " ".join([f"{k}={self.x[k]}" for k in components if self.x[k] != 0])
+        return f"<{__class__.__qualname__} object at {hex(id(self))}, {comps}>"
+
+    def __repr__(self):
+        """Unambiguous representation."""
+        comps = " ".join([f"{k}={self.x[k]}" for k in components if self.x[k] != 0])
+        return f"{__class__.__module__}.{__class__.__qualname__}({comps}, tol={self.tol})"
 
     @classmethod
-    def example_combustion_gas(cls):
+    def init_iso_air(cls):
+        """Initialize the standard mixture for air according to ISO 2533."""
+        return cls(n2=0.781109, o2=0.209548, ar=0.009343)
+
+    @classmethod
+    def init_example_gas(cls):
         """Initialize the example combustion gas mixture used in VDI 4670-1."""
         return cls(n2=0.6, o2=0.1, ar=0.01, h2o=0.17, co2=0.1, co=0.01, so2=0.01)
 
